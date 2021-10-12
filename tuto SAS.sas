@@ -61,18 +61,18 @@ DATA entree.personne;
     1   Alphonse    Danlmur     1   180 25JAN2002 Amiens         
     2   Armelle     Couvert     2   175 19SEP1986 Valenciennes   
     3   Barack      Afritt      1   185 29FEB2000 Valenciennes   
-	4   Céline      Evitable    2   150 01MAR1991 Amiens         
-	5   Daisy       Rable       2   150 10OCT1979 Chauny         
-	6   Elsa        Dorsa       2   160 12NOV2005 Chauny         
-	7   Esmeralda   Desgros     2   170 12JUL1998 Valenciennes   
-	8   Eva         Poree       2   175 11AUG1999 Amiens         
-	9   Henri       Stourne     1   200 27JUL2001 Valenciennes   
-	10  Jacques     Ouzi        1   160 05JUL2003 Amiens         
-	11  Odile       Deray       2   165 03JAN1960 Amiens         
-	12  Sam         Gratte      1   170 20SEP1975 Valenciennes   
-	13  Pierre      Kiroul      1   190 31OCT1985 Amiens         
-	14  Lara        Masse       2   180 11AUG1970 Chauny         
-	15  Aude        Javel       2   170 20APR1989 Amiens         
+    4   Céline      Evitable    2   150 01MAR1991 Amiens         
+    5   Daisy       Rable       2   150 10OCT1979 Chauny         
+    6   Elsa        Dorsa       2   160 12NOV2005 Chauny         
+    7   Esmeralda   Desgros     2   170 12JUL1998 Valenciennes   
+    8   Eva         Poree       2   175 11AUG1999 Amiens         
+    9   Henri       Stourne     1   200 27JUL2001 Valenciennes   
+    10  Jacques     Ouzi        1   160 05JUL2003 Amiens         
+    11  Odile       Deray       2   165 03JAN1960 Amiens         
+    12  Sam         Gratte      1   170 20SEP1975 Valenciennes   
+    13  Pierre      Kiroul      1   190 31OCT1985 Amiens         
+    14  Lara        Masse       2   180 11AUG1970 Chauny         
+    15  Aude        Javel       2   170 20APR1989 Amiens          
   ;
 RUN;
 
