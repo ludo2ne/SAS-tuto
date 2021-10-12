@@ -236,16 +236,11 @@ PROC FREQ DATA = travail.personne_2;
 RUN ;
 
 
-
-
-
-
-
 /***********************************************************************************************************/
 /* Export vers excel
 /***********************************************************************************************************/
 PROC EXPORT DATA = travail.personne_2
-         OUTFILE = "P:\Ludo\Cours\UE2 SAS\tutoriel SAS\personne.xls"
+         OUTFILE = "P:\Ludo\Cours\UE2 SAS\tutoriel SAS\Sortie\personne.xls"
             DBMS = EXCEL REPLACE ;
   SHEET = "feuille1" ; 
 RUN ;
