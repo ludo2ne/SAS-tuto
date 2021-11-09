@@ -103,7 +103,7 @@ DATA travail.personne_2;
     WHEN(year(dnais)>=1980 AND year(dnais)<1990) decennie='1980s';
     WHEN(year(dnais)>=1990 AND year(dnais)<2000) decennie='1990s';
     WHEN(year(dnais)>=2000 AND year(dnais)<2010) decennie='2000s';
-	OTHERWISE decennie='null';
+    OTHERWISE decennie='null';
   END;
 RUN;
 
