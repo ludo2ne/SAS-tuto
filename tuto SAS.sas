@@ -155,10 +155,27 @@ RUN;
 
 /* creer un format et utiliser pour afficher */
 PROC FORMAT;
-  VALUE $sexe_txt
+  VALUE $sexe_txt    /* pour une variable de type texte*/
   '1' = 'Homme'
   '2' = 'Femme';
+  VALUE age_txt      /* pour une variable numerique */
+    0 -< 18  = 'Enfants'
+    18 -< 26 = 'Etudiants'
+    26 -< 40 = 'Jeunes actifs'
+    40 -< 55 = 'Actifs'
+    55 -< 65 = 'Actifs expérimentés'
+    65 -< 80 = 'Jeunes seniors'
+    80 - HIGH = 'Seniors';
+RUN;
 
+/* importer les formats d une librairie */
+OPTIONS FMTSEARCH = (entree);
+
+/* Afficher la liste des formats d une librairie */
+PROC FORMAT LIBRAIRY=source FMTLIB;
+RUN;
+
+/* Utiliser un format */
 PROC PRINT DATA=travail.personne_2;
   FORMAT sexe $sexe_txt.;
 RUN;
