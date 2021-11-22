@@ -51,28 +51,30 @@ DATA entree.personne;
     nom $ 
     sexe $
     taille
+	pointure
     dnais date9.      /* format de saisie de la date */
     ville $	
     ;
   FORMAT 
     dnais DDMMYY10.;  /* format d affichage de la date */
+  LABEL dnais = "Date de naissance";
   /* insertion de donnees */
   DATALINES;
-    1   Alphonse    Danlmur     1   180 25JAN2002 Amiens         
-    2   Armelle     Couvert     2   175 19SEP1986 Valenciennes   
-    3   Barack      Afritt      1   185 29FEB2000 Valenciennes   
-    4   Céline      Evitable    2   150 01MAR1991 Amiens         
-    5   Daisy       Rable       2   150 10OCT1979 Chauny         
-    6   Elsa        Dorsa       2   160 12NOV2005 Chauny         
-    7   Esmeralda   Desgros     2   170 12JUL1998 Valenciennes   
-    8   Eva         Poree       2   175 11AUG1999 Amiens         
-    9   Henri       Stourne     1   200 27JUL2001 Valenciennes   
-    10  Jacques     Ouzi        1   160 05JUL2003 Amiens         
-    11  Odile       Deray       2   165 03JAN1960 Amiens         
-    12  Sam         Gratte      1   170 20SEP1975 Valenciennes   
-    13  Pierre      Kiroul      1   190 31OCT1985 Amiens         
-    14  Lara        Masse       2   180 11AUG1970 Chauny         
-    15  Aude        Javel       2   170 20APR1989 Amiens          
+    1   Alphonse    Danlmur     1   180 43 25JAN2002 Amiens         
+    2   Armelle     Couvert     2   175 39 19SEP1986 Valenciennes   
+    3   Barack      Afritt      1   185 44 29FEB2000 Valenciennes   
+    4   Céline      Evitable    2   150 36 01MAR1991 Amiens         
+    5   Daisy       Rable       2   150 37 10OCT1979 Chauny         
+    6   Elsa        Dorsa       2   160 37 12NOV2005 Chauny         
+    7   Esmeralda   Desgros     2   170 38 12JUL1998 Valenciennes   
+    8   Eva         Poree       2   175 38 11AUG1999 Amiens         
+    9   Henri       Stourne     1   200 47 27JUL2001 Valenciennes   
+    10  Jacques     Ouzi        1   160 39 05JUL2003 Amiens         
+    11  Odile       Deray       2   165 37 03JAN1960 Amiens         
+    12  Sam         Gratte      1   170 40 20SEP1975 Valenciennes   
+    13  Pierre      Kiroul      1   190 46 31OCT1985 Amiens         
+    14  Lara        Masse       2   180 41 11AUG1970 Chauny         
+    15  Aude        Javel       2   170 39 20APR1989 Amiens          
   ;
 RUN;
 
@@ -134,6 +136,16 @@ DATA travail.personne_cumul_taille;
   cumul_taille = SUM(taille,cumul_taille);
 RUN;
 
+/* Conversions numerique-texte*/
+DATA travail.conversion;
+  SET entree.personne;
+  taille_txt = PUT(taille, 6.);
+  sexe_number = INPUT(sexe, 1.);
+RUN; 
+
+PROC CONTENTS DATA=travail.conversion;
+RUN;
+
 
 /***********************************************************************************************************/
 /* Comparer 2 tables
@@ -147,14 +159,19 @@ RUN;
 /* Affichage des valeurs d une table
 /***********************************************************************************************************/ 
 
-PROC PRINT DATA=travail.personne_2;
+PROC PRINT DATA=travail.personne_2 (OBS=10);
 RUN;
 
-PROC PRINT DATA=travail.personne_2 (WHERE =(ident >= 5 AND sexe = '2'));
+PROC PRINT DATA=travail.personne_2 
+  (WHERE =(ident >= 5 AND sexe <> '1'));
+RUN;
+
+PROC PRINT DATA=travail.personne_2 
+  (WHERE =(prenom NOT LIKE 'A%' AND ville IN ('Chauny','Amiens') AND taille BETWEEN 150 AND 180));
 RUN;
 
 /* creer un format et utiliser pour afficher */
-PROC FORMAT;
+PROC FORMAT LIBRAIRY=travail;
   VALUE $sexe_txt    /* pour une variable de type texte*/
   '1' = 'Homme'
   '2' = 'Femme';
@@ -169,10 +186,10 @@ PROC FORMAT;
 RUN;
 
 /* importer les formats d une librairie */
-OPTIONS FMTSEARCH = (entree);
+OPTIONS FMTSEARCH = (travail);
 
 /* Afficher la liste des formats d une librairie */
-PROC FORMAT LIBRAIRY=source FMTLIB;
+PROC FORMAT LIBRAIRY=travail FMTLIB;
 RUN;
 
 /* Utiliser un format */
@@ -310,6 +327,17 @@ PROC GCHART DATA=travail.personne_2;
   VBAR ville / TYPE=PERCENT;
 RUN;
 
+/* Boite a moustache ou Boxplot */
+PROC SGPLOT DATA = travail.personne_2;
+ VBOX taille / CATEGORY = sexe;;
+RUN;
+
+/* Estimer par une loi de probabilite */
+PROC SGPLOT DATA = travail.personne_2;
+ HISTOGRAM taille;
+ DENSITY taille / TYPE=NORMAL;
+RUN;
+
 
 /* Camembert*/ 
 PROC SORT DATA=travail.personne_2;
@@ -320,3 +348,61 @@ PROC GCHART DATA=travail.personne_2;
   BY sexe;
   FORMAT sexe $sexe_txt.;
 RUN;
+
+
+/***********************************************************************************************************/
+/* Statistiques descriptives
+/***********************************************************************************************************/
+
+/* Creation d une ponderation 
+     Les habitants de Chauny vont compter triple
+*/
+DATA travail.personne_ponderee;
+  SET travail.personne_2;
+  IF (ville = 'Chauny') THEN pond = 3;
+  ELSE pond = 1;
+RUN;
+
+PROC MEANS DATA = travail.personne_ponderee N MEAN VAR STD MAXDEC=2;
+  WEIGHT pond;
+  VAR age;
+  TITLE "Avec pondération";
+RUN ;
+PROC MEANS DATA = travail.personne_ponderee N MEAN VAR STD MAXDEC=2;
+  VAR age;
+  TITLE "Sans pondération";
+RUN ;
+TITLE;
+
+/* Test du khi 2 */
+PROC FREQ DATA = travail.personne_2;
+  TABLES taille * pointure / CHISQ;
+RUN;
+
+/* 
+Tableaux croises
+  voir tp2
+  https://od-datamining.com/knwbase/la-procedure-tabulate-sa-vie-son-oeuvre/
+*/
+PROC TABULATE DATA = travail.personne_2 OUT = travail.table_croisee;
+  CLASS age sexe decennie;
+  TABLE (age * sexe),
+        (decennie)* N;
+  FORMAT age age_txt.
+         sexe $sexe_txt.;
+RUN;
+
+/* Coefficient de correlation */
+PROC CORR DATA=travail.personne_2;
+  VAR taille pointure;
+RUN;
+
+/* Droite de regression 
+     y = ax + b
+     b = intercept (tableau Resultats estimes des parametres, colonne Valeur estimee des parametres)
+     a = la valeur est juste en dessous de celle de b
+ */
+PROC REG DATA=travail.personne_2;
+  MODEL taille = pointure;
+RUN;
+
