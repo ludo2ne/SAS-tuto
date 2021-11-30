@@ -406,3 +406,15 @@ PROC REG DATA=travail.personne_2;
   MODEL taille = pointure;
 RUN;
 
+
+
+
+
+/* ANalysis Of VAriance */
+/*
+PROC ANOVA DATA = resultat.titanic_appur;
+  CLASS classe;
+  MODEL prix = classe;
+RUN; 
+*/
+
